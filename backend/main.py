@@ -1,5 +1,6 @@
 # backend/main.py
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .routes import trajectory
 from .logger import logger
@@ -9,6 +10,14 @@ import time
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Coverage Planner API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],            # allow all domains (or restrict later)
+    allow_credentials=True,
+    allow_methods=["*"],            # GET, POST, DELETE, etc.
+    allow_headers=["*"],
+)
 
 app.include_router(trajectory.router, prefix="/trajectory", tags=["trajectory"])
 

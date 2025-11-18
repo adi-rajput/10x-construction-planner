@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Coverage Planner Visualizer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <h2>Coverage Planner</h2>
+    <div id="controls">
+      <label>Name: <input id="name" value="sample"/></label>
+      <label>Wall W: <input id="wallW" value="5"/></label>
+      <label>Wall H: <input id="wallH" value="5"/></label>
+      <label>Resolution(m): <input id="res" value="0.1"/></label>
+      <button id="createBtn">Compute & Save</button>
+      <button id="playBtn">Play</button>
+      <button id="loadBtn">Load last</button>
+    </div>
+    <canvas id="cv" width="600" height="600"></canvas>
+    <div id="explain"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
