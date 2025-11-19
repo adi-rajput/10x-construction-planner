@@ -1,6 +1,6 @@
 // frontend/script.js
 
-const API = "https://one0x-construction-planner.onrender.com/trajactory";
+const API = "https://one0x-construction-planner.onrender.com/trajectory";
 
 const canvas = document.getElementById('cv');
 const ctx = canvas.getContext('2d');
