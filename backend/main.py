@@ -14,9 +14,7 @@ app = FastAPI(title="Coverage Planner API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "*"
-        # Example when deploying:
-        # "https://10x-construction-planner.netlify.app",
+        "https://profound-truffle-73891c.netlify.app/"
     ],
     allow_credentials=True,
     allow_methods=["*"],
