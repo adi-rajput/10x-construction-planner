@@ -1,175 +1,137 @@
 # Coverage Planner – FastAPI, SQLite, HTML5 Canvas
 
-This project implements a complete coverage-path planning system for rectangular walls with rectangular obstacles.  
-The backend is built with FastAPI and stores computed trajectories in SQLite.  
-The frontend uses HTML5 Canvas to visualize the wall, obstacles, and coverage path with playback animation.  
-The project also includes request logging, performance timing, and API test cases.
-
----
+A coverage-path planning system for rectangular walls with rectangular obstacles. Built with FastAPI backend, SQLite storage, and HTML5 Canvas frontend.
 
 ## Overview
 
-Coverage planning is typically used in robotics (e.g., painting drones, wall inspection robots, vacuum cleaners).  
-The system takes user input:
+Coverage planning is commonly used in robotics (painting drones, wall inspection robots, vacuum cleaners). This system takes user input for wall dimensions, obstacles, and grid resolution, then computes a boustrophedon (zig-zag) sweep path that avoids obstacles.
 
-- Wall dimensions (meters)  
-- Rectangular obstacles (x, y, width, height)  
-- Grid resolution  
+**Inputs:**
+- Wall dimensions (meters)
+- Rectangular obstacles (x, y, width, height)
+- Grid resolution
 
-It then converts the wall into a grid and computes a boustrophedon (zig-zag) sweep path that avoids obstacles.  
-The path is stored in SQLite for visualization and retrieval.
-
-The frontend allows:
-
-- Displaying wall and obstacles  
-- Drawing trajectory  
-- Playback animation of the path  
-
----
+**Outputs:**
+- Coverage path stored in SQLite
+- Visual representation on canvas
+- Animated playback
 
 ## Features
 
-### Backend
-- FastAPI server with clean routing (modular structure)
+**Backend:**
+- FastAPI server with modular routing
 - SQLite database using SQLAlchemy ORM
 - CRUD operations for trajectory storage
-- Automatic API documentation (Swagger UI)
-- Request logging with timing
-- CORS enabled for frontend communication
+- Swagger UI documentation at `/docs`
+- Request logging with performance timing
+- CORS enabled
 
-### Coverage Algorithm
-- Grid-based boustrophedon sweep (zig-zag)
-- Converts real-world dimensions to grid cells
+**Coverage Algorithm:**
+- Grid-based boustrophedon sweep
+- Converts dimensions to grid cells
 - Removes obstacle cells
-- Generates dense path points for coverage
-- Supports adjustable resolution
+- Generates waypoints for coverage
+- Adjustable resolution
 
-### Frontend
-- HTML5 Canvas 2D rendering
+**Frontend:**
+- HTML5 Canvas rendering
 - Wall and obstacle visualization
 - Trajectory line drawing
-- Animated playback of path points
-- Simple UI controls for create/load/play
+- Animated playback controls
+- Simple UI for create/load/play operations
 
-### Testing
-- API test suite using pytest + FastAPI TestClient
-- Validates:
-  - Trajectory creation
-  - Listing
-  - Fetching by ID
-  - Deletion
-
----
+**Testing:**
+- pytest test suite with FastAPI TestClient
+- Tests for trajectory creation, listing, fetching, and deletion
 
 ## Project Structure
 
+```
 coverage_planner/
-│── backend/
-│ ├── init.py
-│ ├── main.py
-│ ├── database.py
-│ ├── models.py
-│ ├── schemas.py
-│ ├── crud.py
-│ ├── planner.py
-│ ├── logger.py
-│ └── routes/
-│ └── trajectory.py
-│
-│── frontend/
-│ ├── index.html
-│ ├── script.js
-│ └── styles.css
-│
-│── tests/
-│ └── test_api.py
-│
-│── requirements.txt
-│── .gitignore
-│── README.md
+├── backend/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── crud.py
+│   ├── planner.py
+│   ├── logger.py
+│   └── routes/
+│       └── trajectory.py
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   └── styles.css
+├── tests/
+│   └── test_api.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
 
-yaml
-Copy code
-
----
-
-## Setup Instructions
+## Setup
 
 ### 1. Clone Repository
+```bash
 git clone https://github.com/your-username/coverage_planner.git
 cd coverage_planner
+```
 
-shell
-Copy code
-
-### 2. Create Virtual Environment (Windows PowerShell)
+### 2. Create Virtual Environment
+**Windows PowerShell:**
+```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
+```
 
-shell
-Copy code
+**Linux/Mac:**
+```bash
+python -m venv venv
+source venv/bin/activate
+```
 
 ### 3. Install Dependencies
+```bash
 pip install -r requirements.txt
+```
 
-shell
-Copy code
-
-### 4. Run Backend Server
+### 4. Run Backend
+```bash
 uvicorn backend.main:app --reload
+```
 
-arduino
-Copy code
+Server runs at: `http://127.0.0.1:8000`
 
-Server runs at:
-http://127.0.0.1:8000
-
-yaml
-Copy code
-
-Swagger documentation:
-http://127.0.0.1:8000/docs
-
-shell
-Copy code
+API docs at: `http://127.0.0.1:8000/docs`
 
 ### 5. Run Frontend
-
-Inside the frontend folder:
-
+```bash
 cd frontend
 python -m http.server 5500
+```
 
-r
-Copy code
+Open browser at: `http://127.0.0.1:5500`
 
-Open in browser:
-http://127.0.0.1:5500
+## Algorithm
 
-yaml
-Copy code
+The coverage planning works as follows:
 
----
+1. Wall is divided into a grid based on resolution (e.g., 0.1m = 10cm cells)
+2. Obstacle rectangles are mapped to grid cells and marked as blocked
+3. Boustrophedon sweep is performed:
+   - Even rows: left to right
+   - Odd rows: right to left
+4. Free cells generate center points forming the coverage path
+5. Consecutive duplicate points are removed
+6. Final coordinates stored as JSON in database
 
-## Coverage Planning Algorithm (Explanation)
+## API Endpoints
 
-1. The wall is divided into a grid based on the resolution (e.g., 0.1 m = 10 cm cells).  
-2. Obstacle rectangles are mapped onto the grid and marked as blocked.  
-3. The algorithm performs a boustrophedon sweep:
-   - For even rows: left → right
-   - For odd rows: right → left
-4. Free cells generate center-points which form the coverage path.  
-5. Consecutive duplicate points are removed to reduce noise.  
-6. The final list of [x, y] coordinates is stored in the database.
+### POST /trajectory/create
+Creates a new trajectory.
 
----
-
-## API Documentation
-
-### POST /trajectory/create  
-Creates a new trajectory by computing the coverage path.
-
-Example body:
+**Request body:**
 ```json
 {
   "name": "sample",
@@ -179,82 +141,66 @@ Example body:
   ],
   "resolution": 0.1
 }
-GET /trajectory/list
-Returns stored trajectories.
+```
 
-GET /trajectory/{id}
-Returns a specific trajectory including its path and metadata.
+### GET /trajectory/list
+Returns all stored trajectories.
 
-DELETE /trajectory/{id}
+### GET /trajectory/{id}
+Returns specific trajectory with path data and metadata.
+
+### DELETE /trajectory/{id}
 Deletes a trajectory.
 
-Database Structure (SQLite)
-Table: trajectories
+## Database Schema
 
-Column	Type	Description
-id	Integer PK	Auto-increment primary key
-name	Text	User-provided name
-path	JSON	List of [x, y] coordinates
-meta	JSON	Wall + obstacle + resolution info
-created_at	DateTime	Time of creation (indexed)
+**Table: trajectories**
 
-Index:
+| Column | Type | Description |
+|--------|------|-------------|
+| id | Integer (PK) | Auto-increment primary key |
+| name | Text | User-provided name |
+| path | JSON | List of [x, y] coordinates |
+| meta | JSON | Wall, obstacles, and resolution |
+| created_at | DateTime | Timestamp (indexed) |
 
-pgsql
-Copy code
+**Index:**
+```sql
 CREATE INDEX idx_created_at ON trajectories(created_at);
-Logging and Performance
+```
+
+## Logging
+
 The backend logs:
+- Request method and endpoint
+- HTTP status code
+- Processing time (milliseconds)
+- Trajectory computation duration
 
-Request method
+Logs written to: `coverage_planner.log` (rotating file handler)
 
-Endpoint
+## Testing
 
-HTTP status
-
-Processing time in milliseconds
-
-Trajectory creation duration
-
-Logs are written using a rotating file handler to:
-
-lua
-Copy code
-coverage_planner.log
-Testing with Pytest
-Run the tests:
-
-css
-Copy code
+Run tests:
+```bash
 pytest -q
-The tests validate:
+```
 
-Creating a trajectory
+Tests validate:
+- Trajectory creation
+- Retrieval by ID
+- Listing all trajectories
+- Deletion
+- Response correctness and timing
 
-Retrieving it
+## CORS Configuration
 
-Deleting it
+Frontend runs on `http://127.0.0.1:5500`
 
-Response correctness
+Backend runs on `http://127.0.0.1:8000`
 
-Response time sanity
-
-CORS Explanation
-The frontend runs on:
-
-cpp
-Copy code
-http://127.0.0.1:5500
-The backend runs on:
-
-cpp
-Copy code
-http://127.0.0.1:8000
-Browsers block cross-origin requests unless explicitly allowed.
-CORS middleware is added in main.py:
-
-python
-Copy code
+CORS middleware in `main.py`:
+```python
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -262,36 +208,31 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-Troubleshooting
-1. "ModuleNotFoundError: backend"
-Ensure:
+```
 
-There is a folder named backend/ in the project root
+## Troubleshooting
 
-It contains an __init__.py file
+**"ModuleNotFoundError: backend"**
+- Verify `backend/` folder exists in project root
+- Ensure `__init__.py` exists in `backend/`
+- Run `uvicorn` from project root
 
-You are running uvicorn from the project root
+**CORS blocked**
+- Check CORS middleware is added in `main.py`
 
-2. CORS blocked
-Ensure CORS middleware is added in main.py.
+**Frontend fetch fails**
+- Verify backend is running on port 8000
 
-3. Fetch fails on frontend
-Ensure backend is running on port 8000.
+## Future Enhancements
 
-Future Enhancements
-Multiple obstacles input from frontend
+- Multiple obstacle input from frontend
+- Obstacle editing UI
+- Path smoothing algorithms
+- Variable resolution (higher near obstacles)
+- Export to CSV/GeoJSON
+- Live robot simulation
+- Cloud deployment (Render/Netlify)
 
-Obstacle editing and UI controls
+## License
 
-Smoothing the trajectory
-
-Variable resolution (higher resolution near obstacles)
-
-Export trajectory as CSV/GeoJSON
-
-Live robot simulation
-
-Deployment on Render/Netlify
-
-License
-This project is provided for educational and experimental purposes.
+Educational and experimental use.
