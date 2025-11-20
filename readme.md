@@ -6,9 +6,9 @@ A coverage-path planning system for rectangular walls with obstacles. Computes b
 
 ## Live Demo
 
-- **Frontend:** [https://YOUR_NETLIFY_SITE.netlify.app](https://YOUR_NETLIFY_SITE.netlify.app)
-- **API:** [https://YOUR_RENDER_BACKEND.onrender.com](https://YOUR_RENDER_BACKEND.onrender.com)
-- **Docs:** [https://YOUR_RENDER_BACKEND.onrender.com/docs](https://YOUR_RENDER_BACKEND.onrender.com/docs)
+- **Frontend:** [https://profound-truffle-73891c.netlify.app/](https://profound-truffle-73891c.netlify.app/)
+- **API:** [https://one0x-construction-planner.onrender.com](https://one0x-construction-planner.onrender.com)
+- **Docs:** [https://one0x-construction-planner.onrender.com/docs](https://one0x-construction-planner.onrender.com/docs)
 
 ---
 
@@ -169,7 +169,7 @@ app.add_middleware(
 
 **Update `script.js`:**
 ```javascript
-const API = "https://YOUR_RENDER_BACKEND.onrender.com/trajectory";
+const API = "https://one0x-construction-planner.onrender.com/trajectory";
 ```
 
 ---
